@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="8dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="12dp"
+    tools:context=".ui.repo.RepositoryActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/glActivityRepository"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.02" />
+
+    <ImageView
+        android:id="@+id/ivActivityRepositoryProfile"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:layout_constraintStart_toEndOf="@id/glActivityRepository"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvActivityRepositoryName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="4dp"
+        android:maxLines="2"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:textColor="@color/blue"
+        app:layout_constraintBottom_toTopOf="@id/tvActivityRepositoryStars"
+        app:layout_constraintStart_toEndOf="@id/ivActivityRepositoryProfile"
+        app:layout_constraintTop_toTopOf="@+id/ivActivityRepositoryProfile"
+        tools:text="username/myRepository" />
+
+    <TextView
+        android:id="@+id/tvActivityRepositoryStars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:gravity="center"
+        android:textAppearance="?android:textAppearanceSmall"
+        android:textColor="@color/black"
+        app:drawableLeftCompat="@drawable/ic_baseline_star_24"
+        app:layout_constraintBottom_toBottomOf="@+id/ivActivityRepositoryProfile"
+        app:layout_constraintStart_toEndOf="@id/ivActivityRepositoryProfile"
+        app:layout_constraintTop_toBottomOf="@id/tvActivityRepositoryName"
+        tools:text="100 stars" />
+
+    <View
+        android:id="@+id/line1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="24dp"
+        android:background="#C1C1C1"
+        app:layout_constraintTop_toBottomOf="@id/tvActivityRepositoryStars" />
+
+    <ImageView
+        android:id="@+id/ivActivityRepositoryDescription"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_baseline_description_24"
+        app:layout_constraintBottom_toBottomOf="@id/line2"
+        app:layout_constraintStart_toEndOf="@id/glActivityRepository"
+        app:layout_constraintTop_toTopOf="@+id/line1" />
+
+    <TextView
+        android:id="@+id/tvActivityRepositoryDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/tvActivityRepositoryDescriptionText"
+        app:layout_constraintStart_toEndOf="@id/ivActivityRepositoryDescription"
+        app:layout_constraintTop_toTopOf="@id/ivActivityRepositoryDescription"
+        tools:text="my Description" />
+
+    <TextView
+        android:id="@+id/tvActivityRepositoryDescriptionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="Description"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        app:layout_constraintBottom_toBottomOf="@id/ivActivityRepositoryDescription"
+        app:layout_constraintStart_toEndOf="@id/ivActivityRepositoryDescription"
+        app:layout_constraintTop_toBottomOf="@+id/tvActivityRepositoryDescription" />
+
+    <View
+        android:id="@+id/line2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="24dp"
+        android:background="#C1C1C1"
+        app:layout_constraintTop_toBottomOf="@id/tvActivityRepositoryDescription" />
+
+    <ImageView
+        android:id="@+id/ivActivityRepositoryLanguage"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_baseline_language_24"
+        app:layout_constraintBottom_toBottomOf="@id/line3"
+        app:layout_constraintStart_toEndOf="@id/glActivityRepository"
+        app:layout_constraintTop_toTopOf="@+id/line2" />
+
+    <TextView
+        android:id="@+id/tvActivityRepositoryLanguage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/tvActivityRepositoryLanguageText"
+        app:layout_constraintStart_toEndOf="@id/ivActivityRepositoryLanguage"
+        app:layout_constraintTop_toTopOf="@+id/ivActivityRepositoryLanguage"
+        tools:text="my Language" />
+
+    <TextView
+        android:id="@+id/tvActivityRepositoryLanguageText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="Language"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        app:layout_constraintBottom_toBottomOf="@+id/ivActivityRepositoryLanguage"
+        app:layout_constraintStart_toEndOf="@id/ivActivityRepositoryLanguage"
+        app:layout_constraintTop_toBottomOf="@+id/tvActivityRepositoryLanguage" />
+
+    <View
+        android:id="@+id/line3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="24dp"
+        android:background="#C1C1C1"
+        app:layout_constraintTop_toBottomOf="@id/tvActivityRepositoryLanguage" />
+
+    <ImageView
+        android:id="@+id/ivActivityRepositoryLastUpdate"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_baseline_update_24"
+        app:layout_constraintBottom_toBottomOf="@id/line4"
+        app:layout_constraintStart_toEndOf="@id/glActivityRepository"
+        app:layout_constraintTop_toTopOf="@+id/line3" />
+
+    <TextView
+        android:id="@+id/tvActivityRepositoryLastUpdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/tvActivityRepositoryLastUpdateText"
+        app:layout_constraintStart_toEndOf="@id/ivActivityRepositoryLastUpdate"
+        app:layout_constraintTop_toTopOf="@+id/ivActivityRepositoryLastUpdate"
+        tools:text="my Update" />
+
+    <TextView
+        android:id="@+id/tvActivityRepositoryLastUpdateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="Last update"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        app:layout_constraintBottom_toBottomOf="@id/ivActivityRepositoryLastUpdate"
+        app:layout_constraintStart_toEndOf="@id/ivActivityRepositoryLastUpdate"
+        app:layout_constraintTop_toBottomOf="@+id/tvActivityRepositoryLastUpdate" />
+
+    <View
+        android:id="@+id/line4"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/tvActivityRepositoryLastUpdate" />
+
+    <ProgressBar
+        android:id="@+id/pbActivityRepository"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvActivityRepositoryMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/ActivityRepositoryGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="line1,ivActivityRepositoryProfile,line2,tvActivityRepositoryLastUpdate,ivActivityRepositoryDescription,tvActivityRepositoryStars,tvActivityRepositoryDescriptionText,tvActivityRepositoryLanguageText,tvActivityRepositoryName,tvActivityRepositoryLastUpdateText,ivActivityRepositoryLastUpdate,line4,tvActivityRepositoryDescription,line3,ivActivityRepositoryLanguage,tvActivityRepositoryLanguage" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
