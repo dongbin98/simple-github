@@ -90,7 +90,7 @@ class SearchActivity : AppCompatActivity(), ItemClickListener {
                 hideProgress()
                 val repoSearchResponse = response.body()
                 if (response.isSuccessful && repoSearchResponse != null) {
-                    adapter.setItems(repoSearchResponse.items)
+                    adapter.setItems(repoSearchResponse.items as MutableList<GithubRepo>)
                     adapter.notifyDataSetChanged()
                     if (repoSearchResponse.totalCount == 0) {
                         showError("No search result")

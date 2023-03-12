@@ -65,4 +65,6 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor")
     // kotlin
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.0'
+    // preferenceManager
+    implementation 'androidx.preference:preference-ktx:1.2.0'
 }

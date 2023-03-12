@@ -32,7 +32,7 @@ class SearchAdapter : RecyclerView.Adapter<RepositoryHolder>() {
     }
 
     fun setItems(items: MutableList<GithubRepo>) {
-        this.items = items
+        this.items = items.toMutableList()
     }
 
     fun setItemClickListener(listener: ItemClickListener?) {
