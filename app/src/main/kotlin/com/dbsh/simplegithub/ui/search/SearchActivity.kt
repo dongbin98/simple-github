@@ -63,6 +63,7 @@ class SearchActivity : AppCompatActivity(), ItemClickListener {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_activity_search, menu)
         menuItem = menu.findItem(R.id.menu_activity_search_query)
+        searchView = (menuItem.actionView as SearchView)
         viewDisposables += searchView.queryTextChangeEvents() // RxSearchView AndroidX에서 지원하지 않음
             .filter { it.isSubmitted }
             .map { it.queryText }
