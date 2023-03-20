@@ -13,7 +13,7 @@ import com.dbsh.simplegithub.databinding.ItemRepositoryBinding
 import java.util.ArrayList
 
 class SearchAdapter : RecyclerView.Adapter<RepositoryHolder>() {
-    private var items: MutableList<GithubRepo> = ArrayList()
+    private var items: MutableList<GithubRepo> = mutableListOf()
     private var listener: ItemClickListener? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepositoryHolder {
         val inflater =
@@ -27,9 +27,7 @@ class SearchAdapter : RecyclerView.Adapter<RepositoryHolder>() {
         holder.bind(data)
     }
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
+    override fun getItemCount() = items.size
 
     fun setItems(items: MutableList<GithubRepo>) {
         this.items = items.toMutableList()

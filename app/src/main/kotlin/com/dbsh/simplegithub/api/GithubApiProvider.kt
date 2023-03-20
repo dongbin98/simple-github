@@ -4,78 +4,74 @@ import android.content.Context
 import com.dbsh.simplegithub.data.AuthTokenProvider
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 import java.lang.IllegalStateException
 
-object GithubApiProvider {
-    // get accessToken
-    fun provideAuthApi(): AuthApi {
-        return Retrofit.Builder()
-            .baseUrl("https://github.com/")
-            .client(provideOkHttpClient(provideLoggingInterceptor(), null))
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create<AuthApi>(AuthApi::class.java)
-    }
+// 패키지 단위 함수로 변환, 단일 표현식 변환, 범위 지정 함수
 
-    // get Repository or search Repository
-    fun provideGithubApi(context: Context): GithubApi {
-        return Retrofit.Builder()
-            .baseUrl("https://api.github.com/")
-            .client(provideOkHttpClient(provideLoggingInterceptor(), provideAuthInterceptor(
-                provideAuthTokenProvider(context))))
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(GithubApi::class.java)
-    }
+// get accessToken
+fun provideAuthApi(): AuthApi = Retrofit.Builder()
+    .baseUrl("https://github.com/")
+    .client(provideOkHttpClient(provideLoggingInterceptor(), null))
+    .addCallAdapterFactory(RxJava3CallAdapterFactory.create())  // retrofit response를 observable 형태로 변환
+    .addConverterFactory(GsonConverterFactory.create())
+    .build()
+    .create<AuthApi>(AuthApi::class.java)
 
-    // set OkHttpClient
-    private fun provideOkHttpClient(
-        interceptor: HttpLoggingInterceptor,
-        authInterceptor: AuthInterceptor?,
-    ): OkHttpClient {
-        val builder = OkHttpClient.Builder()
-        if (authInterceptor != null) {
-            builder.addInterceptor(authInterceptor)
+
+// get Repository or search Repository
+fun provideGithubApi(context: Context): GithubApi = Retrofit.Builder()
+    .baseUrl("https://api.github.com/")
+    .client(provideOkHttpClient(provideLoggingInterceptor(), provideAuthInterceptor(
+        provideAuthTokenProvider(context))))
+    .addCallAdapterFactory(RxJava3CallAdapterFactory.create())  // retrofit response를 observable 형태로 변환
+    .addConverterFactory(GsonConverterFactory.create())
+    .build()
+    .create(GithubApi::class.java)
+
+// set OkHttpClient
+private fun provideOkHttpClient(
+    interceptor: HttpLoggingInterceptor,
+    authInterceptor: AuthInterceptor?,
+): OkHttpClient {
+    return OkHttpClient.Builder().run {
+        if(authInterceptor != null) {
+            addInterceptor(authInterceptor)
         }
-        builder.addInterceptor(interceptor)
-        return builder.build()
+        addInterceptor(interceptor)
+        build()
     }
+}
 
-    // set HttpLoggingInterceptor -> Log that Network Request or Response
-    private fun provideLoggingInterceptor(): HttpLoggingInterceptor {
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        return interceptor
-    }
+// set HttpLoggingInterceptor -> Log that Network Request or Response
+private fun provideLoggingInterceptor(): HttpLoggingInterceptor =  HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+}
 
-    // set AuthInterceptor -> add accessToken at Header
-    private fun provideAuthInterceptor(provider: AuthTokenProvider): AuthInterceptor {
-        val token: String =
-            provider.token ?: throw IllegalStateException("authToken cannot be null")
-        return AuthInterceptor(token)
-    }
+// set AuthInterceptor -> add accessToken at Header
+private fun provideAuthInterceptor(provider: AuthTokenProvider): AuthInterceptor {
+    val token: String =
+        provider.token ?: throw IllegalStateException("authToken cannot be null")
+    return AuthInterceptor(token)
+}
 
-    private fun provideAuthTokenProvider(context: Context): AuthTokenProvider {
-        return AuthTokenProvider(context.applicationContext)
-    }
+private fun provideAuthTokenProvider(context: Context): AuthTokenProvider =
+    AuthTokenProvider(context.applicationContext)
 
-    // custom Interceptor -> accessToken add Impl
-    internal class AuthInterceptor(private val token: String) : Interceptor {
-        @Throws(IOException::class)
-        override fun intercept(chain: Interceptor.Chain): Response {
-            val original: Request = chain.request()
 
-            // add token at header
-            val builder = original.newBuilder()
-                .addHeader("Authorization", "token $token")
-            val request: Request = builder.build()
-            return chain.proceed(request)
+// custom Interceptor -> accessToken add Impl
+internal class AuthInterceptor(private val token: String) : Interceptor {
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response = with(chain) {
+        val newRequest = request().newBuilder().run {
+            addHeader("Authorization", "token $token")
+            build()
         }
+        proceed(newRequest)
     }
 }

@@ -59,12 +59,18 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
     implementation(platform('com.squareup.okhttp3:okhttp-bom:5.0.0-alpha.11'))
     // define any required OkHttp artifacts without version
     implementation("com.squareup.okhttp3:okhttp")
-    implementation("com.squareup.okhttp3:logging-interceptor")
+    implementation('com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11')
     // kotlin
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.0'
     // preferenceManager
     implementation 'androidx.preference:preference-ktx:1.2.0'
+/*  // Anko is deprecated
+    implementation 'org.jetbrains.anko:anko-commons:0.10.8'*/
+    // RxJava RxAndroid
+    implementation "io.reactivex.rxjava3:rxjava:3.1.6"
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
 }

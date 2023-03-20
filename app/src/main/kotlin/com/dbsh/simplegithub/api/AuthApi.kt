@@ -3,7 +3,7 @@ package com.dbsh.simplegithub.api
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 import com.dbsh.simplegithub.api.model.GithubAccessToken
-import retrofit2.Call
+import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.Field
 import retrofit2.http.Headers
 
@@ -17,5 +17,5 @@ interface AuthApi {
         @Field("client_id") clientId: String,
         @Field("client_secret") clientSecret: String,
         @Field("code") code: String
-    ): Call<GithubAccessToken?>?
+    ): Observable<GithubAccessToken>
 }
