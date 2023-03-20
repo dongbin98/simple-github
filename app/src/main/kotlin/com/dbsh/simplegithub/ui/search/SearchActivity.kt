@@ -17,6 +17,7 @@ import android.widget.SearchView
 import com.dbsh.simplegithub.databinding.ActivitySearchBinding
 import com.dbsh.simplegithub.extensions.plusAssign
 import com.dbsh.simplegithub.ui.repo.RepositoryActivity
+import com.jakewharton.rxbinding4.widget.queryTextChangeEvents
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -34,6 +35,7 @@ class SearchActivity : AppCompatActivity(), ItemClickListener {
     private val api by lazy { provideGithubApi(this) }
 //    private var searchCall: Call<RepoSearchResponse>? = null
     private val disposables = CompositeDisposable() // 여러 disposable 객체를 관리할 수 있는 CompositeDisposable
+    private val viewDisposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,26 +56,40 @@ class SearchActivity : AppCompatActivity(), ItemClickListener {
 //            cancel()
 //        }
         disposables.clear()
+        if(isFinishing) // 액티비티가 완전히 종료되고 있는 경우에만 디스포저블을 해제
+            viewDisposables.clear()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_activity_search, menu)
         menuItem = menu.findItem(R.id.menu_activity_search_query)
-        searchView = (menuItem.actionView as SearchView).apply {
-            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String): Boolean {
-                    updateTitle(query)
-                    hideSoftKeyboard()
-                    collapseSearchView()
-                    searchRepository(query)
-                    return true
-                }
-
-                override fun onQueryTextChange(newText: String): Boolean {
-                    return false
-                }
-            })
-        }
+        viewDisposables += searchView.queryTextChangeEvents() // RxSearchView AndroidX에서 지원하지 않음
+            .filter { it.isSubmitted }
+            .map { it.queryText }
+            .filter { it.isNotEmpty() }
+            .map { it.toString() }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { query ->
+                updateTitle(query)
+                hideSoftKeyboard()
+                collapseSearchView()
+                searchRepository(query)
+            }
+//        searchView = (menuItem.actionView as SearchView).apply {
+//            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+//                override fun onQueryTextSubmit(query: String): Boolean {
+//                    updateTitle(query)
+//                    hideSoftKeyboard()
+//                    collapseSearchView()
+//                    searchRepository(query)
+//                    return true
+//                }
+//
+//                override fun onQueryTextChange(newText: String): Boolean {
+//                    return false
+//                }
+//            })
+//        }
 
         // Expand SearchView as ActionView
         with(menuItem) {
