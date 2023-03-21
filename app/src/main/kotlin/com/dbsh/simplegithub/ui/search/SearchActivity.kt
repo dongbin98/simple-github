@@ -2,7 +2,6 @@ package com.dbsh.simplegithub.ui.search
 
 import androidx.appcompat.app.AppCompatActivity
 import com.dbsh.simplegithub.ui.search.SearchAdapter.ItemClickListener
-import com.dbsh.simplegithub.api.model.RepoSearchResponse
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dbsh.simplegithub.api.provideGithubApi
@@ -14,17 +13,15 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
+import com.dbsh.simplegithub.data.provideSearchHistoryDao
 import com.dbsh.simplegithub.databinding.ActivitySearchBinding
 import com.dbsh.simplegithub.extensions.plusAssign
-import com.dbsh.simplegithub.extensions.rx.AutoClearDisposable
+import com.dbsh.simplegithub.extensions.runOnIoScheduler
+import com.dbsh.simplegithub.extensions.rx.AutoClearedDisposable
 import com.dbsh.simplegithub.ui.repo.RepositoryActivity
 import com.jakewharton.rxbinding4.widget.queryTextChangeEvents
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class SearchActivity : AppCompatActivity(), ItemClickListener {
     private lateinit var binding: ActivitySearchBinding
@@ -34,11 +31,14 @@ class SearchActivity : AppCompatActivity(), ItemClickListener {
         SearchAdapter().apply { setItemClickListener(this@SearchActivity) }
     }
     private val api by lazy { provideGithubApi(this) }
-//    private var searchCall: Call<RepoSearchResponse>? = null
+
+    //    private var searchCall: Call<RepoSearchResponse>? = null
 //    private val disposables = CompositeDisposable() // 여러 disposable 객체를 관리할 수 있는 CompositeDisposable
-    private val disposables = AutoClearDisposable(this)
-//    private val viewDisposables = CompositeDisposable()
-    private val viewDisposables = AutoClearDisposable(this, alwaysClearOnStop = false)
+    private val disposables = AutoClearedDisposable(this)
+
+    //    private val viewDisposables = CompositeDisposable()
+    private val viewDisposables = AutoClearedDisposable(this, alwaysClearOnStop = false)
+    private val searchHistoryDao by lazy { provideSearchHistoryDao(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,6 +123,11 @@ class SearchActivity : AppCompatActivity(), ItemClickListener {
     }
 
     override fun onItemClick(repository: GithubRepo) {
+//        disposables += Completable  // 옵저버블의 한 종류로, 일반적인 Observable 와 달리 이벤트 스트림에 자료를 전달하지 않음(반환 값이 없는 작업에 유용)
+//            .fromCallable { searchHistoryDao.add(repository) }
+//            .subscribeOn(Schedulers.io())   // DML 코드를 메인 스레드에서 호출 시 에러 -> IO 스레드에서 수행
+//            .subscribe()
+        disposables += runOnIoScheduler { searchHistoryDao.add(repository) }    // 위의 코드 간략화
         startActivity(Intent(this@SearchActivity, RepositoryActivity::class.java).apply {
             putExtra(RepositoryActivity.KEY_USER_LOGIN, repository.owner.login)
             putExtra(RepositoryActivity.KEY_REPO_NAME, repository.name)
@@ -132,7 +137,7 @@ class SearchActivity : AppCompatActivity(), ItemClickListener {
     private fun searchRepository(query: String) {
         disposables += api.searchRepository(query)
             .flatMap {
-                if(it.totalCount == 0) {
+                if (it.totalCount == 0) {
                     Observable.error(IllegalStateException("No search result"))
                 } else {
                     Observable.just(it.items)

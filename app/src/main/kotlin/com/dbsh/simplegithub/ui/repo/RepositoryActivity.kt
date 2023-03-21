@@ -1,8 +1,6 @@
 package com.dbsh.simplegithub.ui.repo
 
-import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
-import com.dbsh.simplegithub.api.model.GithubRepo
 import android.os.Bundle
 import com.dbsh.simplegithub.api.provideGithubApi
 import com.bumptech.glide.Glide
@@ -10,12 +8,8 @@ import android.view.View
 import com.dbsh.simplegithub.R
 import com.dbsh.simplegithub.databinding.ActivityRepositoryBinding
 import com.dbsh.simplegithub.extensions.plusAssign
-import com.dbsh.simplegithub.extensions.rx.AutoClearDisposable
+import com.dbsh.simplegithub.extensions.rx.AutoClearedDisposable
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.lang.IllegalArgumentException
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -32,7 +26,7 @@ class RepositoryActivity : AppCompatActivity() {
     private val api by lazy { provideGithubApi(this) }
 //    private var repoCall: Call<GithubRepo>? = null
 //    private val disposables = CompositeDisposable()
-    private val disposables = AutoClearDisposable(this)
+    private val disposables = AutoClearedDisposable(this)
 
     private val dateFormatInResponse = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.getDefault())
     private val dateFormatToShow = SimpleDateFormat("yyyy년 M월 d일 H시 m분", Locale.getDefault())
@@ -86,8 +80,9 @@ class RepositoryActivity : AppCompatActivity() {
                     println(repo.updatedAt)
                     try {
                         val lastUpdate = dateFormatInResponse.parse(repo.updatedAt)
-                        binding.tvActivityRepositoryLastUpdate.text = dateFormatToShow.format(
-                            lastUpdate)
+                        binding.tvActivityRepositoryLastUpdate.text = lastUpdate?.let {
+                            dateFormatToShow.format(it)
+                        }
                     } catch (e: ParseException) {
                         binding.tvActivityRepositoryLastUpdate.text = "unknown"
                     }

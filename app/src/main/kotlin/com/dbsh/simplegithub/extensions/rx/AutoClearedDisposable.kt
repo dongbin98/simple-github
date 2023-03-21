@@ -5,7 +5,7 @@ import androidx.lifecycle.*
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 
-class AutoClearDisposable(
+class AutoClearedDisposable(
     private val lifecycleOwner: AppCompatActivity, // 생명주기 참조 액티비티
     private val alwaysClearOnStop: Boolean = true, // onStop 호출 시 디스포저블 객체 해제 여부
     private val compositeDisposable: CompositeDisposable = CompositeDisposable(),

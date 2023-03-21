@@ -2,7 +2,6 @@ package com.dbsh.simplegithub.ui.signin
 
 import androidx.appcompat.app.AppCompatActivity
 import com.dbsh.simplegithub.data.AuthTokenProvider
-import com.dbsh.simplegithub.api.model.GithubAccessToken
 import android.os.Bundle
 import androidx.browser.customtabs.CustomTabsIntent
 import com.dbsh.simplegithub.api.provideAuthApi
@@ -13,13 +12,9 @@ import android.widget.Toast
 import com.dbsh.simplegithub.BuildConfig
 import com.dbsh.simplegithub.databinding.ActivitySignInBinding
 import com.dbsh.simplegithub.extensions.plusAssign
-import com.dbsh.simplegithub.extensions.rx.AutoClearDisposable
+import com.dbsh.simplegithub.extensions.rx.AutoClearedDisposable
 import com.dbsh.simplegithub.ui.main.MainActivity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 
@@ -29,7 +24,7 @@ class SignInActivity : AppCompatActivity() {
     private val authTokenProvider by lazy { AuthTokenProvider(this) }
 //    private var accessTokenCall: Call<GithubAccessToken>? = null
 //    private val disposables = CompositeDisposable() // 여러 disposable 객체를 관리할 수 있는 CompositeDisposable
-    private val disposables = AutoClearDisposable(this)
+    private val disposables = AutoClearedDisposable(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
