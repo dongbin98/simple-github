@@ -13,6 +13,7 @@ import android.widget.Toast
 import com.dbsh.simplegithub.BuildConfig
 import com.dbsh.simplegithub.databinding.ActivitySignInBinding
 import com.dbsh.simplegithub.extensions.plusAssign
+import com.dbsh.simplegithub.extensions.rx.AutoClearDisposable
 import com.dbsh.simplegithub.ui.main.MainActivity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -27,12 +28,15 @@ class SignInActivity : AppCompatActivity() {
     private val api by lazy { provideAuthApi() }
     private val authTokenProvider by lazy { AuthTokenProvider(this) }
 //    private var accessTokenCall: Call<GithubAccessToken>? = null
-    private val disposables = CompositeDisposable() // 여러 disposable 객체를 관리할 수 있는 CompositeDisposable
+//    private val disposables = CompositeDisposable() // 여러 disposable 객체를 관리할 수 있는 CompositeDisposable
+    private val disposables = AutoClearDisposable(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        lifecycle += disposables
+
         binding.btnActivitySignInStart.setOnClickListener {
             // 형식 : http://github.com/login/oauth/authorize?client_id={ ID }
             val authUri = Uri.Builder().scheme("https")
@@ -50,13 +54,13 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-//        accessTokenCall?.run {
-//            cancel()
-//        }
-        disposables.clear()
-    }
+//    override fun onStop() {
+//        super.onStop()
+////        accessTokenCall?.run {
+////            cancel()
+////        }
+//        disposables.clear()
+//    }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)

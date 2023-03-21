@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import com.dbsh.simplegithub.databinding.ActivitySearchBinding
 import com.dbsh.simplegithub.extensions.plusAssign
+import com.dbsh.simplegithub.extensions.rx.AutoClearDisposable
 import com.dbsh.simplegithub.ui.repo.RepositoryActivity
 import com.jakewharton.rxbinding4.widget.queryTextChangeEvents
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -34,13 +35,17 @@ class SearchActivity : AppCompatActivity(), ItemClickListener {
     }
     private val api by lazy { provideGithubApi(this) }
 //    private var searchCall: Call<RepoSearchResponse>? = null
-    private val disposables = CompositeDisposable() // 여러 disposable 객체를 관리할 수 있는 CompositeDisposable
-    private val viewDisposables = CompositeDisposable()
+//    private val disposables = CompositeDisposable() // 여러 disposable 객체를 관리할 수 있는 CompositeDisposable
+    private val disposables = AutoClearDisposable(this)
+//    private val viewDisposables = CompositeDisposable()
+    private val viewDisposables = AutoClearDisposable(this, alwaysClearOnStop = false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        lifecycle += disposables
+        lifecycle += viewDisposables
 
         with(binding.rvActivitySearchList) {
             layoutManager = LinearLayoutManager(this@SearchActivity)
@@ -50,15 +55,15 @@ class SearchActivity : AppCompatActivity(), ItemClickListener {
         binding.rvActivitySearchList.adapter = adapter
     }
 
-    override fun onStop() {
-        super.onStop()
-//        searchCall?.run {
-//            cancel()
-//        }
-        disposables.clear()
-        if(isFinishing) // 액티비티가 완전히 종료되고 있는 경우에만 디스포저블을 해제
-            viewDisposables.clear()
-    }
+//    override fun onStop() {
+//        super.onStop()
+////        searchCall?.run {
+////            cancel()
+////        }
+//        disposables.clear()
+//        if(isFinishing) // 액티비티가 완전히 종료되고 있는 경우에만 디스포저블을 해제
+//            viewDisposables.clear()
+//    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_activity_search, menu)

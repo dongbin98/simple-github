@@ -10,6 +10,7 @@ import android.view.View
 import com.dbsh.simplegithub.R
 import com.dbsh.simplegithub.databinding.ActivityRepositoryBinding
 import com.dbsh.simplegithub.extensions.plusAssign
+import com.dbsh.simplegithub.extensions.rx.AutoClearDisposable
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import retrofit2.Call
@@ -30,15 +31,17 @@ class RepositoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRepositoryBinding
     private val api by lazy { provideGithubApi(this) }
 //    private var repoCall: Call<GithubRepo>? = null
-    private val disposables = CompositeDisposable()
+//    private val disposables = CompositeDisposable()
+    private val disposables = AutoClearDisposable(this)
 
-    val dateFormatInResponse = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.getDefault())
-    val dateFormatToShow = SimpleDateFormat("yyyy년 M월 d일 H시 m분", Locale.getDefault())
+    private val dateFormatInResponse = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.getDefault())
+    private val dateFormatToShow = SimpleDateFormat("yyyy년 M월 d일 H시 m분", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRepositoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        lifecycle += disposables
 
         val login = intent.getStringExtra(KEY_USER_LOGIN)
             ?: throw IllegalArgumentException("No login info exists in extras")
@@ -47,13 +50,13 @@ class RepositoryActivity : AppCompatActivity() {
         showRepositoryInfo(login, repo)
     }
 
-    override fun onStop() {
-        super.onStop()
-//        repoCall?.run {
-//            cancel()
-//        }
-        disposables.clear()
-    }
+//    override fun onStop() {
+//        super.onStop()
+////        repoCall?.run {
+////            cancel()
+////        }
+//        disposables.clear()
+//    }
 
     private fun showRepositoryInfo(login: String, repoName: String) {
         disposables += api.getRepository(login, repoName)
